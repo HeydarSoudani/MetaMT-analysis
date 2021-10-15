@@ -173,7 +173,13 @@ class BertCCA(nn.Module):
       )
       return outputs
 
-
+  def to(self, *args, **kwargs):
+    self = super().to(*args, **kwargs)
+    self.device = args[0]  # store device
+    self.clf_model = self.clf_model.to(*args, **kwargs)
+    self.sc_dropout = self.sc_dropout.to(*args, **kwargs)
+    self.sc_classifier = self.sc_classifier.to(*args, **kwargs)
+    return self
 
 
 
