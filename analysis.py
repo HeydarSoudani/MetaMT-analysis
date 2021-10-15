@@ -142,7 +142,7 @@ test_dataloader = DataLoader(
 
 class BertCCA(nn.Module):
   def __init__(self, args):
-    super(BertMetaLearning, self).__init__()
+    super(BertCCA, self).__init__()
     self.args = args
     self.device = None
 
