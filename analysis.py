@@ -171,7 +171,7 @@ class BertCCA(nn.Module):
         labels=data["label"],
         output_hidden_states=True
       )
-      print(outputs)
+      return outputs
 
 
 
@@ -185,9 +185,15 @@ def plot_cca_similarity():
     model = torch.load(args.load)
   
   model.eval()
-  test_loss, test_acc, cm = evaluateNLI(model, test_dataloader, DEVICE)
-  print("test_loss {:10.8f} test_acc {:6.4f}".format(test_loss, test_acc))
-
+  with torch.no_grad():
+    total_loss = 0.0
+    correct = 0.0
+    total = 0.0
+    matrix = [[0 for _ in range(3)] for _ in range(3)]
+    for batch in test_dataloader:
+      batch["label"] = batch["label"].to(DEVICE)
+      output = model.forward("sc", batch)
+      print(output)
 
 
 if __name__ == "__main__":
