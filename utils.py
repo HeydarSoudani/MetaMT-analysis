@@ -115,7 +115,7 @@ def evaluateNLI(model, data, device):
 
         total_loss /= len(data)
 
-        return total_loss, correct / total, matrix
+        return total_loss, correct / total  # , matrix
 
 
 def evaluatePA(model, data, device):
