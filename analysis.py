@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sn
 import matplotlib.pyplot as plt
-from transformers import AutoModel, AutoModelForSequenceClassification, logging
+from transformers import AutoModel, AutoModelForSequenceClassification
 from data import CorpusQA, CorpusSC, CorpusTC, CorpusPO, CorpusPA
 from utils import evaluateQA, evaluateNLI, evaluateNER, evaluatePOS, evaluatePA
 from sklearn.metrics import confusion_matrix, accuracy_score
