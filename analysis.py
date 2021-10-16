@@ -116,26 +116,39 @@ def load_data(task_lang):
 
 test_corpus, batch_size = load_data(args.task)
 test_dataloader = DataLoader(
-  test_corpus, batch_size=800, pin_memory=True, drop_last=True
+  test_corpus, batch_size=batch_size, pin_memory=True, drop_last=True
 )
-batch = next(iter(test_dataloader))
-batch["label"] = batch["label"].to(DEVICE)
+# batch = next(iter(test_dataloader))
+
 
 cca_sim = []
 first_model.eval()
 second_model.eval()
+
+all_f_acts1 = [[] for _ in range(13)]
+all_f_acts2 = [[] for _ in range(13)]
+
 with torch.no_grad():
-  first_output = first_model.forward("sc", batch)
-  second_output = second_model.forward("sc", batch)
+  for batch in test_dataloader:
+    batch["label"] = batch["label"].to(DEVICE)
 
-  for i in range(len(first_output.hidden_states)):
-    f_acts1 = torch.unsqueeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
-    f_acts2 = torch.unsqueeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
+    first_output = first_model.forward("sc", batch)
+    second_output = second_model.forward("sc", batch)
 
-    f_acts1 = f_acts1.cpu().detach().numpy()
-    f_acts2 = f_acts2.cpu().detach().numpy()
+    for i in range(len(first_output.hidden_states)):
+      f_acts1 = torch.unsqueeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
+      f_acts2 = torch.unsqueeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
 
-    f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
+      all_f_acts1[i].append(f_acts1)
+      all_f_acts2[i].append(f_acts2)
+
+    all_f_acts1 = [torch.cat(all_f_acts1[i]).cpu().detach().numpy() for i in range(13)]
+    all_f_acts2 = [torch.cat(all_f_acts2[i]).cpu().detach().numpy() for i in range(13)]
+    
+    print(all_f_acts1[0].shape)
+    print(all_f_acts2[0].shape)
+
+    f_results = cca_core.get_cca_similarity(all_f_acts1[0].T, all_f_acts2[0].T, epsilon=1e-10, verbose=False)
     print(f_results["cca_coef1"].mean())
     cca_sim.append(f_results["cca_coef1"].mean())
 
