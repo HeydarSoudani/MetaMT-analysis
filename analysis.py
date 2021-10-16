@@ -66,24 +66,25 @@ if args.second_model != "":
 
 # print(first_model.parameters().clf_model['roberta.encoder.layer.0.attention.output.dense.weight'])
 # print(first_model.clf_model['roberta.encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
-print(second_model.clf_model)
-print(second_model.clf_model.roberta)
-print(second_model.clf_model.roberta.encoder)
-print(second_model.clf_model.roberta.encoder.layer[0])
-print(second_model.clf_model.roberta.encoder.layer[0].attention)
-print(second_model.clf_model.roberta.encoder.layer[0].attention.output)
-print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
+# print(second_model.clf_model)
+# print(second_model.clf_model.roberta)
+# print(second_model.clf_model.roberta.encoder)
+# print(second_model.clf_model.roberta.encoder.layer[0])
+# print(second_model.clf_model.roberta.encoder.layer[0].attention)
+# print(second_model.clf_model.roberta.encoder.layer[0].attention.output)
+# print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
 
 
 cca_sim = []
-for layer in range(12):
-  f_acts1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8 ,9], [0, 0, 0]])
-  f_acts2 = np.array([[1, 1, 1], [4, 5, 6], [7, 8 ,9], [0, 0, 0]])
+for l in range(12):
+  f_acts1 = first_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
+  f_acts2 = second_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
 
   f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
   print(f_results["cca_coef1"].mean())
   cca_sim.append(f_results["cca_coef1"].mean())
 
+print(cca_sim)
 
 
 
