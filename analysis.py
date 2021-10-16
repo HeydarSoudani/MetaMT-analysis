@@ -121,33 +121,29 @@ test_dataloader = DataLoader(
 batch = next(iter(test_dataloader))
 batch["label"] = batch["label"].to(DEVICE)
 
+cca_sim = []
 first_model.eval()
+second_model.eval()
 with torch.no_grad():
-  output = first_model.forward("sc", batch)
-  # print()
-  for i in range(len(output.hidden_states)):
-    print('layer:{}, {}'.format(i, output.hidden_states[i].shape))
-# second_model.eval()
-# with torch.no_grad():
-#   output = second_model.forward("sc", batch)
+  first_output = first_model.forward("sc", batch)
+  second_output = second_model.forward("sc", batch)
+
+  for i in range(len(first_output.hidden_states)):
+    f_acts1 = torch.unsqueeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
+    f_acts2 = torch.unsqueeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
+
+    f_acts1 = f_acts1.cpu().detach().numpy()
+    f_acts2 = f_acts2.cpu().detach().numpy()
+
+    f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
+    print(f_results["cca_coef1"].mean())
+    cca_sim.append(f_results["cca_coef1"].mean())
+
+print(cca_sim)
 
 
 
 
-
-# cca_sim = []
-# for l in range(12):
-#   f_acts1 = first_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
-#   f_acts2 = second_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
-
-#   f_acts1 = f_acts1.cpu().detach().numpy()
-#   f_acts2 = f_acts2.cpu().detach().numpy()
-
-#   f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
-#   print(f_results["cca_coef1"].mean())
-#   cca_sim.append(f_results["cca_coef1"].mean())
-
-# print(cca_sim)
 
 
 
