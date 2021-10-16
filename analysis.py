@@ -138,8 +138,10 @@ with torch.no_grad():
   for batch in test_dataloader:
     batch["label"] = batch["label"].to(DEVICE)
 
-    first_output = first_model.forward("sc", batch)
-    second_output = second_model.forward("sc", batch)
+    # first_output = first_model.forward("sc", batch)
+    # second_output = second_model.forward("sc", batch)
+    first_output = first_model.forward(batch)
+    second_output = second_model.forward(batch)
 
     for i in range(len(first_output.hidden_states)):
       f_acts1 = torch.squeeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
