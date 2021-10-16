@@ -142,11 +142,11 @@ with torch.no_grad():
       print(f_acts1.shape)
       print(f_acts2.shape)
 
-      all_f_acts1[i].append(f_acts1)
-      all_f_acts2[i].append(f_acts2)
+      all_f_acts1[i].append(f_acts1.cpu().detach().numpy())
+      all_f_acts2[i].append(f_acts2.cpu().detach().numpy())
 
-  all_f_acts1 = [torch.cat(all_f_acts1[i]).cpu().detach().numpy() for i in range(13)]
-  all_f_acts2 = [torch.cat(all_f_acts2[i]).cpu().detach().numpy() for i in range(13)]
+  all_f_acts1 = [np.concatenate(all_f_acts1[i]) for i in range(13)]
+  all_f_acts2 = [np.concatenate(all_f_acts2[i]) for i in range(13)]
     
   print(all_f_acts1[0].shape)
   print(all_f_acts2[0].shape)
