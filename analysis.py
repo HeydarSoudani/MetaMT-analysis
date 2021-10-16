@@ -56,6 +56,8 @@ if args.second_model != "":
   second_model = torch.load(args.second_model)
 
 
+print(first_model)
+
 # print(first_model.roberta.state_dict())
 # time.sleep(5)
 
