@@ -137,11 +137,27 @@ all_f_acts2 = [[] for _ in range(13)]
 with torch.no_grad():
   for batch in test_dataloader:
     batch["label"] = batch["label"].to(DEVICE)
+    batch["input_ids"] = batch["input_ids"].to(DEVICE)
+    batch["attention_mask"] = batch["attention_mask"].to(DEVICE)
+    batch["token_type_ids"] = batch["token_type_ids"].to(DEVICE)
+    batch["label"] = batch["label"].to(DEVICE)
 
     # first_output = first_model.forward("sc", batch)
     # second_output = second_model.forward("sc", batch)
-    first_output = first_model.forward(batch)
-    second_output = second_model.forward(batch)
+    first_output = first_model(
+      batch["input_ids"],
+      token_type_ids=batch["token_type_ids"],
+      attention_mask=batch["attention_mask"],
+      labels=batch["label"],
+      output_hidden_states=True
+    )
+    second_output = second_model(
+      batch["input_ids"],
+      token_type_ids=batch["token_type_ids"],
+      attention_mask=batch["attention_mask"],
+      labels=batch["label"],
+      output_hidden_states=True
+    )
 
     for i in range(len(first_output.hidden_states)):
       f_acts1 = torch.squeeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
