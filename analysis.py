@@ -1,7 +1,13 @@
 import os, argparse, torch, logging, warnings, time
 import numpy as np
 import cca_core
+
+from torch.utils.data import DataLoader
+from data import CorpusQA, CorpusSC, CorpusTC, CorpusPO, CorpusPA
+from utils import evaluateQA, evaluateNLI, evaluateNER, evaluatePOS, evaluatePA
 from model import BertMetaLearning
+from datapath import get_loc
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--first_model", type=str, default="", help="")
@@ -42,6 +48,10 @@ if torch.cuda.is_available():
   torch.cuda.manual_seed_all(args.seed)
 DEVICE = torch.device("cuda" if args.cuda else "cpu")
 
+### == Randomness =================
+torch.manual_seed(args.seed)
+np.random.seed(args.seed)
+
 
 ### == Load Models ================
 assert args.first_model != "", "Set first model"
@@ -60,19 +70,80 @@ for name, param in first_model.named_parameters():
   print('name: {}, param: {}'.format(name, param.shape))
 # print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
 
-cca_sim = []
-for l in range(12):
-  f_acts1 = first_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
-  f_acts2 = second_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
 
-  f_acts1 = f_acts1.cpu().detach().numpy()
-  f_acts2 = f_acts2.cpu().detach().numpy()
+### == load Data ===================
+def load_data(task_lang):
+  [task, lang] = task_lang.split("_")
+  if task == "qa":
+      test_corpus = CorpusQA(
+          *get_loc("test", task_lang, args.data_dir),
+          model_name=args.model_name,
+          local_files_only=args.local_model
+      )
+      batch_size = args.qa_batch_size
+  elif task == "sc":
+      test_corpus = CorpusSC(
+          *get_loc("test", task_lang, args.data_dir),
+          model_name=args.model_name,
+          local_files_only=args.local_model
+      )
+      batch_size = args.sc_batch_size
+  elif task == "tc":
+      test_corpus = CorpusTC(
+          get_loc("test", task_lang, args.data_dir)[0],
+          model_name=args.model_name,
+          local_files_only=args.local_model,
+      )
+      batch_size = args.tc_batch_size
+  elif task == "po":
+      test_corpus = CorpusPO(
+          get_loc("test", task_lang, args.data_dir)[0],
+          model_name=args.model_name,
+          local_files_only=args.local_model,
+      )
+      batch_size = args.po_batch_size
+  elif task == "pa":
+      test_corpus = CorpusPA(
+          get_loc("test", task_lang, args.data_dir)[0],
+          model_name=args.model_name,
+          local_files_only=args.local_model,
+      )
+      batch_size = args.pa_batch_size
 
-  f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
-  print(f_results["cca_coef1"].mean())
-  cca_sim.append(f_results["cca_coef1"].mean())
+  return test_corpus, batch_size
 
-print(cca_sim)
+test_corpus, batch_size = load_data(args.task)
+test_dataloader = DataLoader(
+  test_corpus, batch_size=500, pin_memory=True, drop_last=True
+)
+batch = next(iter(test_dataloader))
+batch["label"] = batch["label"].to(DEVICE)
+
+first_model.eval()
+with torch.no_grad():
+  output = first_model.forward("sc", batch)
+  print(output)
+# second_model.eval()
+# with torch.no_grad():
+#   output = second_model.forward("sc", batch)
+
+
+
+
+
+# cca_sim = []
+# for l in range(12):
+#   f_acts1 = first_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
+#   f_acts2 = second_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
+
+#   f_acts1 = f_acts1.cpu().detach().numpy()
+#   f_acts2 = f_acts2.cpu().detach().numpy()
+
+#   f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
+#   print(f_results["cca_coef1"].mean())
+#   cca_sim.append(f_results["cca_coef1"].mean())
+
+# print(cca_sim)
 
 
 

@@ -99,6 +99,7 @@ class BertMetaLearning(nn.Module):
                 token_type_ids=data["token_type_ids"],
                 attention_mask=data["attention_mask"],
                 labels=data["label"],
+                output_hidden_states=True
             )
 
         elif "pa" in task:
