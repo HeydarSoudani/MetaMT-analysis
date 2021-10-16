@@ -136,8 +136,8 @@ with torch.no_grad():
     second_output = second_model.forward("sc", batch)
 
     for i in range(len(first_output.hidden_states)):
-      f_acts1 = torch.unsqueeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
-      f_acts2 = torch.unsqueeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
+      f_acts1 = torch.squeeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
+      f_acts2 = torch.squeeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
 
       print(f_acts1.shape)
       print(f_acts2.shape)
