@@ -33,6 +33,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 import numpy as np
+import sys
 
 num_cca_trials = 5
 
@@ -260,9 +261,9 @@ def get_cca_similarity(acts1, acts2, epsilon=0., threshold=0.98,
   sigmayy = covariance[numx:, numx:]
 
   # rescale covariance to make cca computation more stable
-  xmax = np.max(np.abs(sigmaxx))
+  xmax = np.max(np.abs(sigmaxx)) + epsilon
   print(xmax)
-  ymax = np.max(np.abs(sigmayy))
+  ymax = np.max(np.abs(sigmayy)) + epsilon
   print(ymax)
   sigmaxx /= xmax
   print(sigmaxx)
