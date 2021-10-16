@@ -66,7 +66,7 @@ if args.second_model != "":
 
 # print(first_model.parameters().clf_model['roberta.encoder.layer.0.attention.output.dense.weight'])
 # print(first_model.clf_model['roberta.encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
-print(second_model.parameters()['clf_model']['roberta']['encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
+print(second_model.state_dict()['clf_model']['roberta']['encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
 
 
 cca_sim = []
