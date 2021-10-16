@@ -126,8 +126,7 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, epsilon,
   numy = sigma_yy.shape[0]
 
   if numx == 0 or numy == 0:
-    return ([0, 0, 0], [0, 0, 0], np.zeros_like(sigma_xx),
-            np.zeros_like(sigma_yy), x_idxs, y_idxs)
+    return ([0, 0, 0], 0, [0, 0, 0], np.zeros_like(sigma_xx),np.zeros_like(sigma_yy), x_idxs, y_idxs)
 
   if verbose:
     print("adding eps to diagonal and taking inverse")
@@ -153,14 +152,15 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, epsilon,
     print("computed everything!")
 
   print('-------------')
-  print(u)
-  print(np.abs(s))
-  print(invsqrt_xx)
-  print(invsqrt_yy)
-  print(x_idxs)
-  print(y_idxs)
+  print(u.shape)
+  print(np.abs(s).shape)
+  
+  # print(invsqrt_xx)
+  # print(invsqrt_yy)
+  # print(x_idxs)
+  # print(y_idxs)
   print('-------------')
-  return u, np.abs(s), v, invsqrt_xx, invsqrt_yy, x_idxs, y_idxs
+  return [u, np.abs(s), v], invsqrt_xx, invsqrt_yy, x_idxs, y_idxs
 
 
 def sum_threshold(array, threshold):
@@ -264,25 +264,25 @@ def get_cca_similarity(acts1, acts2, epsilon=0., threshold=0.98,
 
   # rescale covariance to make cca computation more stable
   xmax = np.max(np.abs(sigmaxx)) + epsilon
-  print(xmax)
+  # print(xmax)
   ymax = np.max(np.abs(sigmayy)) + epsilon
-  print(ymax)
+  # print(ymax)
   sigmaxx /= xmax
-  print(sigmaxx)
+  # print(sigmaxx)
   sigmayy /= ymax
-  print(sigmayy)
+  # print(sigmayy)
   sigmaxy /= np.sqrt(xmax * ymax)
-  print(sigmaxy)
+  # print(sigmaxy)
   sigmayx /= np.sqrt(xmax * ymax)
-  print(sigmayx)
+  # print(sigmayx)
 
   print('#########')
   print('#########')
-  output = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
-  print(output)
+  # output = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
+  # print(output)
   
-  print(len(compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)))
-  u, s, v, invsqrt_xx, invsqrt_yy, x_idxs, y_idxs = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
+  # print(len(compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)))
+  [u, s, v], invsqrt_xx, invsqrt_yy, x_idxs, y_idxs = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
 
   # if x_idxs or y_idxs is all false, return_dict has zero entries
   if (not np.any(x_idxs)) or (not np.any(y_idxs)):
