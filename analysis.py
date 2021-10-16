@@ -139,9 +139,6 @@ with torch.no_grad():
       f_acts1 = torch.squeeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
       f_acts2 = torch.squeeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
 
-      print(f_acts1.shape)
-      print(f_acts2.shape)
-
       all_f_acts1[i].append(f_acts1.cpu().detach().numpy())
       all_f_acts2[i].append(f_acts2.cpu().detach().numpy())
 
