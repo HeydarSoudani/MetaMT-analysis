@@ -20,6 +20,7 @@ parser.add_argument(
     default="xlm-roberta-base",
     help="name of the pretrained model",
 )
+parser.add_argument("--task", type=str, default="sc_fa")
 parser.add_argument("--lr", type=float, default=3e-5, help="learning rate")
 parser.add_argument("--dropout", type=float, default=0.1, help="")
 parser.add_argument("--hidden_dims", type=int, default=768, help="")
@@ -66,8 +67,8 @@ if args.second_model != "":
   second_model = torch.load(args.second_model)
 
 # print(first_model)
-for name, param in first_model.named_parameters():
-  print('name: {}, param: {}'.format(name, param.shape))
+# for name, param in first_model.named_parameters():
+#   print('name: {}, param: {}'.format(name, param.shape))
 # print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
 
 
