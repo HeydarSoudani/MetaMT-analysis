@@ -124,8 +124,9 @@ batch["label"] = batch["label"].to(DEVICE)
 first_model.eval()
 with torch.no_grad():
   output = first_model.forward("sc", batch)
-  print(len(output.hidden_states))
-  print(output.hidden_states[0].shape)
+  # print()
+  for i in range(len(output.hidden_states)):
+    print('layer:{}, {}'.format(i, output.hidden_states[i].shape))
 # second_model.eval()
 # with torch.no_grad():
 #   output = second_model.forward("sc", batch)
