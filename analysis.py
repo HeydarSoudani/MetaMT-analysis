@@ -68,8 +68,8 @@ if args.second_model != "":
   second_model = torch.load(args.second_model)
 
 # print(first_model)
-# for name, param in first_model.named_parameters():
-#   print('name: {}, param: {}'.format(name, param.shape))
+for name, param in first_model.named_parameters():
+  print('name: {}, param: {}'.format(name, param.shape))
 # print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
 
 
@@ -124,7 +124,8 @@ batch["label"] = batch["label"].to(DEVICE)
 first_model.eval()
 with torch.no_grad():
   output = first_model.forward("sc", batch)
-  print(output)
+  print(len(output.hidden_states))
+  print(output.hidden_states[0].shape)
 # second_model.eval()
 # with torch.no_grad():
 #   output = second_model.forward("sc", batch)
