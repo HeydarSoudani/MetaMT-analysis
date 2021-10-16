@@ -55,25 +55,10 @@ if args.first_model != "":
 if args.second_model != "":
   second_model = torch.load(args.second_model)
 
-
 # print(first_model)
-
-# print(first_model.roberta.state_dict())
-# time.sleep(5)
-
 # for name, param in first_model.named_parameters():
 #   print('name: {}, param: {}'.format(name, param.shape))
-
-# print(first_model.parameters().clf_model['roberta.encoder.layer.0.attention.output.dense.weight'])
-# print(first_model.clf_model['roberta.encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
-# print(second_model.clf_model)
-# print(second_model.clf_model.roberta)
-# print(second_model.clf_model.roberta.encoder)
-# print(second_model.clf_model.roberta.encoder.layer[0])
-# print(second_model.clf_model.roberta.encoder.layer[0].attention)
-# print(second_model.clf_model.roberta.encoder.layer[0].attention.output)
 # print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
-
 
 cca_sim = []
 for l in range(12):

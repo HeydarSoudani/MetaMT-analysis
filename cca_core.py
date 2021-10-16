@@ -295,8 +295,6 @@ def get_cca_similarity(acts1, acts2, epsilon=0., threshold=0.98,
              return_dict["invsqrt_yy"])
 
     # compute means
-    print(acts1.shape)
-    print(acts2.shape)
     neuron_means1 = np.mean(acts1, axis=1, keepdims=True)
     neuron_means2 = np.mean(acts2, axis=1, keepdims=True)
     return_dict["neuron_means1"] = neuron_means1
