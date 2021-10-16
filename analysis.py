@@ -80,6 +80,9 @@ for l in range(12):
   f_acts1 = first_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
   f_acts2 = second_model.clf_model.roberta.encoder.layer[l].attention.output.dense.weight
 
+  f_acts1 = f_acts1.cpu().detach().numpy()
+  f_acts2 = f_acts2.cpu().detach().numpy()
+
   f_results = cca_core.get_cca_similarity(f_acts1.T, f_acts2.T, epsilon=1e-10, verbose=False)
   print(f_results["cca_coef1"].mean())
   cca_sim.append(f_results["cca_coef1"].mean())
