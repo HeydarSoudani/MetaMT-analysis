@@ -33,6 +33,9 @@ if args.second_model != "":
 print(first_model.roberta.state_dict())
 time.sleep(5)
 
+for name, param in first_model.parameters():
+  print('name: {}, param: {}'.format(name, param.shape))
+
 cca_sim = []
 for layer in range(12):
   f_acts1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8 ,9], [0, 0, 0]])
