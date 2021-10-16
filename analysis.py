@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from data import CorpusQA, CorpusSC, CorpusTC, CorpusPO, CorpusPA
 from model import BertMetaLearning
 from datapath import get_loc
-from transformers import AutoModel
+from transformers import AutoModel, AutoModelForSequenceClassification
 
 
 parser = argparse.ArgumentParser()
@@ -61,11 +61,11 @@ assert args.second_model != "", "Set second model"
  
 # first_model = BertMetaLearning(args).to(DEVICE)
 # second_model = BertMetaLearning(args).to(DEVICE)
-first_model = AutoModel.from_pretrained(
-  args.model_name, local_files_only=args.local_model
+first_model = AutoModelForSequenceClassification.from_pretrained(
+  args.model_name, num_labels=args.sc_labels, local_files_only=args.local_model
 ).to(DEVICE)
-second_model = AutoModel.from_pretrained(
-  args.model_name, local_files_only=args.local_model
+second_model = AutoModelForSequenceClassification.from_pretrained(
+  args.model_name, num_labels=args.sc_labels, local_files_only=args.local_model
 ).to(DEVICE)
 
 if args.first_model != "":
