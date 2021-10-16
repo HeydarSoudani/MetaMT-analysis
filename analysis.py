@@ -6,6 +6,8 @@ from model import BertMetaLearning
 parser = argparse.ArgumentParser()
 parser.add_argument("--first_model", type=str, default="", help="")
 parser.add_argument("--second_model", type=str, default="", help="")
+parser.add_argument("--cuda", action="store_true", help="use CUDA")
+parser.add_argument("--seed", type=int, default=0, help="seed for numpy and pytorch")
 args = parser.parse_args()
 print(args)
 
