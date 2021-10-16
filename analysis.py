@@ -69,11 +69,11 @@ second_model = AutoModel.from_pretrained(
 ).to(DEVICE)
 
 if args.first_model != "":
-  first_model = torch.load(args.first_model)
+  first_model.load_state_dict(torch.load(args.first_model))
 if args.second_model != "":
-  second_model = torch.load(args.second_model)
+  second_model.load_state_dict(torch.load(args.second_model))
 
-print(first_model)
+# print(first_model)
 # for name, param in first_model.named_parameters():
 #   print('name: {}, param: {}'.format(name, param.shape))
 # print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
