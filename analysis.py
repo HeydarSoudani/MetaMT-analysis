@@ -20,6 +20,7 @@ parser.add_argument(
     default="xlm-roberta-base",
     help="name of the pretrained model",
 )
+parser.add_argument("--data_dir", type=str, default="data/", help="directory of data")
 parser.add_argument("--task", type=str, default="sc_fa")
 parser.add_argument("--lr", type=float, default=3e-5, help="learning rate")
 parser.add_argument("--dropout", type=float, default=0.1, help="")
