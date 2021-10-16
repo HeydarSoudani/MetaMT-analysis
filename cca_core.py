@@ -261,11 +261,17 @@ def get_cca_similarity(acts1, acts2, epsilon=0., threshold=0.98,
 
   # rescale covariance to make cca computation more stable
   xmax = np.max(np.abs(sigmaxx))
+  print(xmax)
   ymax = np.max(np.abs(sigmayy))
+  print(ymax)
   sigmaxx /= xmax
+  print(sigmaxx)
   sigmayy /= ymax
+  print(sigmayy)
   sigmaxy /= np.sqrt(xmax * ymax)
+  print(sigmaxy)
   sigmayx /= np.sqrt(xmax * ymax)
+  print(sigmayx)
 
   print(len(compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)))
   u, s, v, invsqrt_xx, invsqrt_yy, x_idxs, y_idxs = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
