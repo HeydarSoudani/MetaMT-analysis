@@ -139,18 +139,21 @@ with torch.no_grad():
       f_acts1 = torch.unsqueeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
       f_acts2 = torch.unsqueeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
 
+      print(f_acts1.shape)
+      print(f_acts2.shape)
+
       all_f_acts1[i].append(f_acts1)
       all_f_acts2[i].append(f_acts2)
 
     all_f_acts1 = [torch.cat(all_f_acts1[i]).cpu().detach().numpy() for i in range(13)]
     all_f_acts2 = [torch.cat(all_f_acts2[i]).cpu().detach().numpy() for i in range(13)]
     
-    print(all_f_acts1[0].shape)
-    print(all_f_acts2[0].shape)
+  print(all_f_acts1[0].shape)
+  print(all_f_acts2[0].shape)
 
-    f_results = cca_core.get_cca_similarity(all_f_acts1[0].T, all_f_acts2[0].T, epsilon=1e-10, verbose=False)
-    print(f_results["cca_coef1"].mean())
-    cca_sim.append(f_results["cca_coef1"].mean())
+  f_results = cca_core.get_cca_similarity(all_f_acts1[0].T, all_f_acts2[0].T, epsilon=1e-10, verbose=False)
+  print(f_results["cca_coef1"].mean())
+  cca_sim.append(f_results["cca_coef1"].mean())
 
 print(cca_sim)
 
