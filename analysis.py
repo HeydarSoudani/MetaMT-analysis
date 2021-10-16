@@ -121,8 +121,8 @@ test_dataloader = DataLoader(
 
 
 cca_sim = []
-first_model.eval()
-second_model.eval()
+# first_model.eval()
+# second_model.eval()
 
 all_f_acts1 = [[] for _ in range(13)]
 all_f_acts2 = [[] for _ in range(13)]
@@ -153,40 +153,10 @@ with torch.no_grad():
 print(results)
 
 
-# acts1 = np.random.rand(1000,768)
-# acts2 = np.random.rand(1000,768)
-
-# f_results = cca_core.get_cca_similarity(acts1.T, acts2.T, epsilon=1e-10, verbose=False)
-# print(f_results["cca_coef1"].mean())
-# # cca_sim.append(f_results["cca_coef1"].mean())
-
-
-
-
 
 
 
 # # plot confusion matrix
-
-# model = BertMetaLearning(args).to(DEVICE)
-# if args.load != "":
-#   model = torch.load(args.load)
-
-# def plot_confusion_matrix():
-#   model.eval()
-
-#   if "qa" in args.task:
-#     pass
-#   elif "sc" in args.task:
-#     _, _, cm = evaluateNLI(model, test_dataloader, DEVICE)
-#     labels = ['contradiction', 'entailment', 'neutral']
-#   elif "tc" in args.task:
-#     pass
-#   elif "po" in args.task:
-#     pass
-#   elif "pa" in args.task:
-#     pass
-
 #   df_cm = pd.DataFrame(cm, labels, labels)
 #   sn.set(font_scale=1.4) # for label size
 #   sn.heatmap(df_cm, annot=True, annot_kws={"size": 16}) # font size
