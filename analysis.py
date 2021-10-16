@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from data import CorpusQA, CorpusSC, CorpusTC, CorpusPO, CorpusPA
 from model import BertMetaLearning
 from datapath import get_loc
+from transformers import AutoModel
 
 
 parser = argparse.ArgumentParser()
@@ -58,8 +59,14 @@ np.random.seed(args.seed)
 assert args.first_model != "", "Set first model"
 assert args.second_model != "", "Set second model"
  
-first_model = BertMetaLearning(args).to(DEVICE)
-second_model = BertMetaLearning(args).to(DEVICE)
+# first_model = BertMetaLearning(args).to(DEVICE)
+# second_model = BertMetaLearning(args).to(DEVICE)
+first_model = AutoModel.from_pretrained(
+  args.model_name, local_files_only=args.local_model
+).to(DEVICE)
+second_model = AutoModel.from_pretrained(
+  args.model_name, local_files_only=args.local_model
+).to(DEVICE)
 
 if args.first_model != "":
   first_model = torch.load(args.first_model)
@@ -121,8 +128,8 @@ test_dataloader = DataLoader(
 
 
 cca_sim = []
-# first_model.eval()
-# second_model.eval()
+first_model.eval()
+second_model.eval()
 
 all_f_acts1 = [[] for _ in range(13)]
 all_f_acts2 = [[] for _ in range(13)]
