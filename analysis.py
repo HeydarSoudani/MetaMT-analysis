@@ -144,14 +144,13 @@ with torch.no_grad():
   all_f_acts1 = [np.concatenate(all_f_acts1[i]) for i in range(13)]
   all_f_acts2 = [np.concatenate(all_f_acts2[i]) for i in range(13)]
     
-  print(all_f_acts1[0].shape)
-  print(all_f_acts2[0].shape)
 
-  f_results = cca_core.get_cca_similarity(all_f_acts1[0].T, all_f_acts2[0].T, epsilon=1e-10, verbose=False)
-  print(f_results["cca_coef1"].mean())
-  cca_sim.append(f_results["cca_coef1"].mean())
+  results = []
+  for i in range(13):
+    f_results = cca_core.get_cca_similarity(all_f_acts1[i].T, all_f_acts2[i].T, epsilon=1e-10, verbose=False)
+    results.append(f_results["cca_coef1"].mean())
 
-print(cca_sim)
+print(results)
 
 
 # acts1 = np.random.rand(1000,768)

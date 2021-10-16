@@ -151,15 +151,6 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, epsilon,
   if verbose:
     print("computed everything!")
 
-  print('-------------')
-  print(u.shape)
-  print(np.abs(s).shape)
-  
-  # print(invsqrt_xx)
-  # print(invsqrt_yy)
-  # print(x_idxs)
-  # print(y_idxs)
-  print('-------------')
   return [u, np.abs(s), v], invsqrt_xx, invsqrt_yy, x_idxs, y_idxs
 
 
