@@ -4,7 +4,6 @@ import cca_core
 
 from torch.utils.data import DataLoader
 from data import CorpusQA, CorpusSC, CorpusTC, CorpusPO, CorpusPA
-from utils import evaluateQA, evaluateNLI, evaluateNER, evaluatePOS, evaluatePA
 from model import BertMetaLearning
 from datapath import get_loc
 
@@ -155,15 +154,15 @@ with torch.no_grad():
 print(cca_sim)
 
 
+# acts1 = np.random.rand(1000,768)
+# acts2 = np.random.rand(1000,768)
+
+# f_results = cca_core.get_cca_similarity(acts1.T, acts2.T, epsilon=1e-10, verbose=False)
+# print(f_results["cca_coef1"].mean())
+# # cca_sim.append(f_results["cca_coef1"].mean())
 
 
 
-
-
-
-if __name__ == "__main__":
-  # plot_cca_similarity()
-  pass
 
 
 
