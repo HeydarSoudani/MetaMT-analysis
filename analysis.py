@@ -116,7 +116,7 @@ def load_data(task_lang):
 
 test_corpus, batch_size = load_data(args.task)
 test_dataloader = DataLoader(
-  test_corpus, batch_size=500, pin_memory=True, drop_last=True
+  test_corpus, batch_size=1000, pin_memory=True, drop_last=True
 )
 batch = next(iter(test_dataloader))
 batch["label"] = batch["label"].to(DEVICE)
