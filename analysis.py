@@ -59,7 +59,7 @@ if args.second_model != "":
 # print(first_model.roberta.state_dict())
 # time.sleep(5)
 
-for name, param in first_model.parameters():
+for name, param in first_model.named_parameters():
   print('name: {}, param: {}'.format(name, param.shape))
 
 cca_sim = []
