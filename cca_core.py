@@ -126,7 +126,7 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, epsilon,
   numy = sigma_yy.shape[0]
 
   if numx == 0 or numy == 0:
-    return ([0, 0, 0], 0, [0, 0, 0], np.zeros_like(sigma_xx),np.zeros_like(sigma_yy), x_idxs, y_idxs)
+    return ([[0, 0, 0], 0, [0, 0, 0]], np.zeros_like(sigma_xx),np.zeros_like(sigma_yy), x_idxs, y_idxs)
 
   if verbose:
     print("adding eps to diagonal and taking inverse")
