@@ -1,4 +1,4 @@
-import os, argparse, torch, logging, warnings
+import os, argparse, torch, logging, warnings, time
 import numpy as np
 import pandas as pd
 import seaborn as sn
@@ -190,6 +190,9 @@ def plot_cca_similarity():
   if args.load != "":
     model = torch.load(args.load)
   
+  print(model)
+  time.sleep(5)
+
   model.eval()
   with torch.no_grad():
     total_loss = 0.0
