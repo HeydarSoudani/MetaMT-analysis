@@ -62,9 +62,9 @@ if args.second_model != "":
 # for name, param in first_model.named_parameters():
 #   print('name: {}, param: {}'.format(name, param.shape))
 
-# first_model.clf_model.roberta.encoder.layer.0.attention.output.dense.weight
-print(first_model.clf_model['roberta']['encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
-print(second_model.clf_model['roberta']['encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
+print(first_model['clf_model.roberta.encoder.layer.0.attention.output.dense.weight'])
+# print(first_model.clf_model['roberta.encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
+# print(second_model.clf_model['roberta']['encoder']['layer'][0]['attention']['output']['dense']['weight'].shape)
 
 
 cca_sim = []
