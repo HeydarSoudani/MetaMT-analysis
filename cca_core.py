@@ -267,12 +267,6 @@ def get_cca_similarity(acts1, acts2, epsilon=0., threshold=0.98,
   sigmayx /= np.sqrt(xmax * ymax)
   # print(sigmayx)
 
-  print('#########')
-  print('#########')
-  # output = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
-  # print(output)
-  
-  # print(len(compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)))
   [u, s, v], invsqrt_xx, invsqrt_yy, x_idxs, y_idxs = compute_ccas(sigmaxx, sigmaxy, sigmayx, sigmayy, epsilon=epsilon,verbose=verbose)
 
   # if x_idxs or y_idxs is all false, return_dict has zero entries
