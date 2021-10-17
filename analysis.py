@@ -112,7 +112,8 @@ first_model = BertMetaLearning(args).to(DEVICE)
 #   local_files_only=args.local_model
 # ).to(DEVICE)
 if args.first_model != "":
-  first_model.load_state_dict(torch.load(args.first_model))
+  first_model = torch.load(args.first_model)
+  # first_model.load_state_dict(torch.load(args.first_model))
 
 # print(first_model)
 # for name, param in first_model.named_parameters():
@@ -153,7 +154,8 @@ second_model = BertMetaLearning(args).to(DEVICE)
 #   local_files_only=args.local_model
 # ).to(DEVICE)
 if args.second_model != "":
-  second_model.load_state_dict(torch.load(args.second_model))
+  second_model = torch.load(args.second_model)
+  # second_model.load_state_dict(torch.load(args.second_model))
 
 
 all_f_acts2 = [[] for _ in range(13)]
