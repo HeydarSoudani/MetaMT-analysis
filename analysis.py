@@ -54,31 +54,6 @@ DEVICE = torch.device("cuda" if args.cuda else "cpu")
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
-
-### == Load Models ================
-assert args.first_model != "", "Set first model"
-assert args.second_model != "", "Set second model"
- 
-# first_model = BertMetaLearning(args).to(DEVICE)
-# second_model = BertMetaLearning(args).to(DEVICE)
-first_model = AutoModelForSequenceClassification.from_pretrained(
-  args.model_name, num_labels=args.sc_labels, local_files_only=args.local_model
-).to(DEVICE)
-second_model = AutoModelForSequenceClassification.from_pretrained(
-  args.model_name, num_labels=args.sc_labels, local_files_only=args.local_model
-).to(DEVICE)
-
-if args.first_model != "":
-  first_model.load_state_dict(torch.load(args.first_model))
-if args.second_model != "":
-  second_model.load_state_dict(torch.load(args.second_model))
-
-# print(first_model)
-# for name, param in first_model.named_parameters():
-#   print('name: {}, param: {}'.format(name, param.shape))
-# print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
-
-
 ### == load Data ===================
 def load_data(task_lang):
   [task, lang] = task_lang.split("_")
@@ -127,13 +102,25 @@ test_dataloader = DataLoader(
 # batch = next(iter(test_dataloader))
 
 
-cca_sim = []
-first_model.eval()
-second_model.eval()
+assert args.first_model != "", "Set first model"
+assert args.second_model != "", "Set second model"
+### == Load 1stModel ===============
+# first_model = BertMetaLearning(args).to(DEVICE)
+first_model = AutoModelForSequenceClassification.from_pretrained(
+  args.model_name,
+  num_labels=args.sc_labels,
+  local_files_only=args.local_model
+).to(DEVICE)
+if args.first_model != "":
+  first_model.load_state_dict(torch.load(args.first_model))
+
+# print(first_model)
+# for name, param in first_model.named_parameters():
+#   print('name: {}, param: {}'.format(name, param.shape))
+# print(second_model.clf_model.roberta.encoder.layer[0].attention.output.dense.weight.shape)
 
 all_f_acts1 = [[] for _ in range(13)]
-all_f_acts2 = [[] for _ in range(13)]
-
+first_model.eval()
 with torch.no_grad():
   for batch in test_dataloader:
     batch["label"] = batch["label"].to(DEVICE)
@@ -143,15 +130,7 @@ with torch.no_grad():
     batch["label"] = batch["label"].to(DEVICE)
 
     # first_output = first_model.forward("sc", batch)
-    # second_output = second_model.forward("sc", batch)
     first_output = first_model(
-      batch["input_ids"],
-      token_type_ids=batch["token_type_ids"],
-      attention_mask=batch["attention_mask"],
-      labels=batch["label"],
-      output_hidden_states=True
-    )
-    second_output = second_model(
       batch["input_ids"],
       token_type_ids=batch["token_type_ids"],
       attention_mask=batch["attention_mask"],
@@ -161,20 +140,53 @@ with torch.no_grad():
 
     for i in range(len(first_output.hidden_states)):
       f_acts1 = torch.squeeze(first_output.hidden_states[i][:, 0, :], 1)  #[500, 768]
-      f_acts2 = torch.squeeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
-
       all_f_acts1[i].append(f_acts1.cpu().detach().numpy())
+     
+all_f_acts1 = [np.concatenate(all_f_acts1[i]) for i in range(13)]
+first_model.to('cpu')
+
+### == Load 2nd Model ==============
+
+# second_model = BertMetaLearning(args).to(DEVICE)
+second_model = AutoModelForSequenceClassification.from_pretrained(
+  args.model_name,
+  num_labels=args.sc_labels,
+  local_files_only=args.local_model
+).to(DEVICE)
+if args.second_model != "":
+  second_model.load_state_dict(torch.load(args.second_model))
+
+
+all_f_acts2 = [[] for _ in range(13)]
+second_model.eval()
+with torch.no_grad():
+  for batch in test_dataloader:
+    batch["label"] = batch["label"].to(DEVICE)
+    batch["input_ids"] = batch["input_ids"].to(DEVICE)
+    batch["attention_mask"] = batch["attention_mask"].to(DEVICE)
+    batch["token_type_ids"] = batch["token_type_ids"].to(DEVICE)
+    batch["label"] = batch["label"].to(DEVICE)
+
+    # second_output = second_model.forward("sc", batch)
+    second_output = second_model(
+      batch["input_ids"],
+      token_type_ids=batch["token_type_ids"],
+      attention_mask=batch["attention_mask"],
+      labels=batch["label"],
+      output_hidden_states=True
+    )
+
+    for i in range(len(second_output.hidden_states)):
+      f_acts2 = torch.squeeze(second_output.hidden_states[i][:, 0, :], 1) #[500, 768]
       all_f_acts2[i].append(f_acts2.cpu().detach().numpy())
 
-  all_f_acts1 = [np.concatenate(all_f_acts1[i]) for i in range(13)]
-  all_f_acts2 = [np.concatenate(all_f_acts2[i]) for i in range(13)]
-    
+all_f_acts2 = [np.concatenate(all_f_acts2[i]) for i in range(13)]
+second_model.to('cpu') 
 
-  results = []
-  for i in range(13):
-    f_results = cca_core.get_cca_similarity(all_f_acts1[i].T, all_f_acts2[i].T, epsilon=1e-10, verbose=False)
-    results.append(f_results["cca_coef1"].mean())
-
+results = []
+for i in range(13):
+  f_results = cca_core.get_cca_similarity(all_f_acts1[i].T, all_f_acts2[i].T, epsilon=1e-10, verbose=False)
+  results.append(f_results["cca_coef1"].mean())
 print(results)
 
 
